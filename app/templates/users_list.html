@@ -1,0 +1,15 @@
+{% if users %}
+	<ul class="media-list">
+  		{% for user in users %}
+  			<li class="media">
+    			<a class="pull-left" href="/user_profile/{{user[0]}}">
+      				<img src="{{ url_for('static', filename = 'images/default_avatar.jpg') }}" class="account-avatar" name={{ user[0] }} width="50" height="50" />
+    			</a>
+    			<div class="media-body">
+      				<a href="/user_profile/{{user[0]}}"><h4 class="media-heading">{{ user[0] }}</h4></a>
+      				{{ user[1] }} {{ user[2] }}
+    			</div>
+  			</li>
+  		{% endfor %}
+	</ul>
+{% endif %}

@@ -1,0 +1,26 @@
+<h3><label class="glyphicon glyphicon-tag"></label>
+<label>Send message</label></h3>
+<table id="table-send-message">
+  {% if messages %}
+    <tr>
+      <td><label>To: </label></td>
+      <td>
+        <img id="img-message-reply" src="{{ url_for('static', filename = 'images/default_avatar.jpg') }}" class="account-avatar" width="30" height="30" />
+        <input type="text" id="message-to" readonly="true" />
+      </td>
+    </tr>
+  {% endif %}
+  <tr>
+    <td><label>Subject: </label></td>
+    <td><input type="text" id="tbx-message-subject" maxlength="32" placeholder="None" style="width: 200px" /></td>
+  </tr>
+  <tr>
+    <td valign="top"><label>Message: </label></td>
+    <td>
+      <textarea id="txarea-message-body" placeholder="Write your message here" maxlength="256" style="width: 100%; height: 70px" ></textarea>
+    </td>
+  </tr>
+  <tr><td></td>
+    <td><button id="btn-message-send" class="btn btn-info" disabled="true">Send</button></td>
+  <tr>
+</table>

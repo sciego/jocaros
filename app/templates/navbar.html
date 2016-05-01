@@ -1,0 +1,64 @@
+<h3><span class="label label-success">JOCAROS</span></h3>
+<table style="width: 100%">
+	<tr>
+		<td style="width: 45%">
+			<button class="btn btn-default">
+				<a href="/">
+					<span class="glyphicon glyphicon-home"> Home</span>
+				</a>
+			</button>
+			<button class="btn btn-default">
+				<a href="/messages">
+					<span id="span-messages" class="glyphicon glyphicon-envelope"></span>
+				</a>
+			</button>
+			<button class="btn btn-default">
+				<a href="/purchases">
+					<span class="glyphicon glyphicon-download-alt"> Downloads</span>
+					</a>
+			</button>
+		</td>
+		<form name="searchgamesform" action="/games_search" method="post">
+		<td style="width: 1px">
+			<input type="text" name="tbx-search-game" class="form-control" placeholder="Search games" style="width: 300px" />
+		</td>
+		<td>
+			<div class="btn-group">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Search by <span class="caret" />
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="javascript:search_games('title')">Title</a></li>
+					<li><a href="javascript:search_games('developer')">Developer</a></li>
+				</ul>
+			</div>
+			<input type="hidden" name="searchbtn" />
+		</td>
+		</form>
+		<td>
+			<div class="btn-group">
+				<button type="button" class="btn btn-info" data-toggle="dropdown" style="background: blue">
+					<span id="span-friend-requests" class="glyphicon glyphicon-list-alt"></span>
+				</button>
+				<ul id="ul-friend-requests" class="dropdown-menu">
+				</ul>
+			</div>
+			<div class="btn-group">
+				<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" style="background: blue">
+					<span class="glyphicon glyphicon-user">
+					<b>{{ session.logged_in[0] }}</b> <span class="caret" />
+					</span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="/profile">Profile</a></li>
+					<li><a href="/friends">Friends</a></li>
+					{% if session['logged_in'][4] == 1 %}
+						<li class="divider"></li>
+						<li><a href="/upload_game">Upload game</a></li>
+					{% endif %}
+					<li class="divider"></li>
+					<li><a href="/logout">Sign out</a></li>
+				</ul>
+			</div>
+		</td>
+	</tr>
+</table>

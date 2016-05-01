@@ -1,0 +1,22 @@
+{% extends 'template.html' %}
+{% block content %}
+	<h1>Reward Points</h1>
+  	<br/>
+  	<table>
+  		<tr>
+  			<td width="60%">
+  				<h3>Welcome to the reward zone.</h3>
+  				<p>The reward point system consists in getting <b>1 point</b> per $10.00 USD spend in game purchasing.</p><br/>
+  				<p><b>NOTE:</b> if you buy a game that costs less than $10.00, you won't get any reward points, even if you purchase another games that costs the "complement" of the previous one.</p><br/>
+  				<p>You can cash in your reward points and get credit to your Wallet. You can purchase any game you like with that credit.</p><br/><br/>
+  				You currently have: <label>{{ session['logged_in'][6] }} points = ${{ session['logged_in'][6] }}.00 USD </label><br/><br/>
+  				<form action="/reward_points" method="post">
+  					<input type="submit" value="Cash Now" class="btn btn-warning btn-lg" />
+  				</form>
+    		</td>
+    		<td width="40%">
+    			<img src="../static/images/reward.png" />
+    		</td>
+    	</tr>
+    </table>
+{% endblock %}

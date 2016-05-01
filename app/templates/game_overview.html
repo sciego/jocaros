@@ -1,0 +1,45 @@
+{% extends 'template.html' %}
+{% block content %}
+	<h2>Game Overview</h2>
+	{% if game %}
+		<div class="jumbotron">
+  			<h2>{{ game[2] }}</h2>
+  			<table>
+  				<tr>
+  					<td>
+  						<img src="{{ url_for('static', filename = 'images/no_cover.jpg') }}" class="game-cover" name={{ game[0] }} width="200" height="200" />
+  					</td>
+  					<td style="padding: 10px">
+  						<p><b>Developer:</b> {{ game[1] }}<br/>
+  						<b>Category:</b> {{ game[6] }}<br/>
+  						<b>Uploaded:</b> {{ game[5] }}<br/>
+  						<b>Downloads:</b> {{ game[4] }}<br/>
+  						<b>Price:</b> ${{ game[3] }}</p>
+  						<p>
+  							{% if purchased == 0 %}
+  								<a id="btn-buy-now" class="btn btn-success btn-lg btn-dialog" role="button">Buy now</a>
+  							{% else %}
+  								<a class="btn btn-info btn-lg" role="button">Download</a>
+  							{% endif %}
+  						</p>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<div class="overlay">
+			<div id="dialog">
+				<div>
+					<h3><label class="glyphicon glyphicon-shopping-cart"></label>
+					<label>Confirm purchase</label></h3>
+					<p>Proceeding with the purchase will take the required amount of money from you wallet funds.</p><br/>
+					<p>Total amount: ${{ game[3] }}</p><br/><br/>
+					<p>
+						<a id="btn-confirm-purchase" class="btn btn-warning btn-lg btn-confirm" role="button">Confirm</a>
+						<a id="btn-cancel" class="btn btn-default btn-lg" role="button">Cancel</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "template.html" %}
+{% block content %}
+	<h1>Messages</h1>
+	<br/>
+	<table class="table-messages">
+		<tr>
+			<td>
+				{% if messages %}
+					<table class="table-shared">
+						<th><input type="checkbox" id="cbx-th" /></th>
+						<th>From</th>
+						<th>Subject</th>
+						<th>Sent</th>
+						{% for m in messages %}
+							{% if m[4] == 0 %}
+								<tr class="tr-messages" name="{{ m[0] }}" bgcolor="#EEECFF">
+							{% else %}
+								<tr>
+							{% endif %}
+								<td><input type="checkbox" class="cbx-tr" name="{{ m[0] }}" /></td>
+								<td>
+									<a class="a-message-from" name="{{ m[0] }}" style="cursor: pointer">
+										{% if m[4] == 0 %}
+											<b>{{ m[1] }}</b>
+										{% else %}
+											{{ m[1] }}
+										{% endif %}
+									</a>
+								</td>
+								<td>{{ m[2] }}</td>
+								<td>{{ m[3] }}</td>
+							</tr>
+						{% endfor %}
+					</table>
+				{% else %}
+					<label style="padding: 10px">You have no messages.</label>
+				{% endif %}
+			</td>
+			<td>
+				<button id="btn-messages-delete" class="btn btn-default">
+					<span class="glyphicon glyphicon-trash"></span>
+				</button>
+			</td>
+			<td>
+				<label style="margin-left: 50px">Opened message:</label>
+				<table id="table-send-message" style="margin-left: 50px; background: #EEECFF;">
+  					<tr>
+    					<td><label>From: </label></td>
+    					<td><input type="text" id="tbx-view-from" maxlength="32" readonly="true" style="width: 200px" /></td>
+  					</tr>
+  					<tr>
+    					<td><label>Subject: </label></td>
+    					<td><input type="text" id="tbx-view-subject" maxlength="32" readonly="true" style="width: 200px" /></td>
+  					</tr>
+  					<tr>
+  						<td><label>Sent: </label></td>
+  						<td id="td-view-datetime"></td>
+  					</tr>
+  					<tr>
+    					<td valign="top"><label>Message: </label></td>
+    					<td>
+      						<textarea id="txarea-view-body" readonly="true" maxlength="256" style="width: 100%; height: 70px" ></textarea>
+    					</td>
+  					</tr>
+  					<tr><td></td>
+    					<td>
+    						<button id="btn-message-reply" class="btn-dialog" disabled="true">
+    							<span class="glyphicon glyphicon-repeat"> Reply</span>
+    						</button>
+    					</td>
+  					<tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+
+	<div class="overlay">
+		<div id="dialog">
+			<div>
+				{% include 'send_message.html' %}
+			</div>
+		</div>
+	</div>
+{% endblock %}

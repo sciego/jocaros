@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Jocaros</title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-theme.css') }}" />
+		<style>
+			.overlay {
+    			position:fixed;
+    			display:none; 
+				background-color: rgba(0, 0, 0, 0.7); /* 0.7 = 70% opacity */
+    			top: 0;
+    			left: 0;
+    			bottom: 0;
+    			right: 0;
+			}
+
+			#dialog {
+				background: orange;
+				padding: 10px;
+			}
+			#dialog div {
+				background: white;
+				padding: 20px;
+				width: 100%;
+				height: 100%;
+			}
+			#dialog .btn-confirm {
+				margin-left: 50%;
+			}
+			#dialog #btn-cancel {
+				margin-left: 20px;
+			}
+
+			.table-friend-requests tr:hover {
+				background: #EEECFF;
+			}
+			.table-friend-requests td {
+				padding: 3px;
+			}
+			.td-friend-requests-userid {
+				padding-left: 10px;
+				min-width: 100px;
+				max-width: 100px;
+			}
+
+			#table-send-message td {
+				padding: 6px;
+			}
+
+			.table-shared th {
+				padding: 8px;
+			}
+			.table-shared td {
+				padding: 8px;
+			}
+		</style>
+		<script type="text/javascript" src="../static/js/jquery-1.7.1.js"></script>
+		<script type="text/javascript" src="../static/js/bootstrap.js"></script>
+		<script type="text/javascript" src="../static/js/jquery-ui.js"></script>
+		<script type="text/javascript">
+			// Game search button choose (by title or by developer).
+			function search_games(by){
+				document.searchgamesform.searchbtn.value = by;
+				document.searchgamesform.submit();
+			}
+
+			function imagePreview(input) {
+        		if (input.files && input.files[0]) {
+            		var reader = new FileReader();
+
+            		reader.onload = function (e) {
+                		$('#img-upload')
+                    		.attr('src', e.target.result);
+            		};
+
+            		reader.readAsDataURL(input.files[0]);
+        		}
+    		}
+
+			function getGameCovers() {
+				var gameCovers = $('.game-cover');
+				var game_id = 0;
+				var value = "";
+				for (var i = 0; i < gameCovers.length; i++){
+					game_id = gameCovers[i].name;
+					value = "/get_game_cover/" + game_id;
+					gameCovers[i].src = value;
+					//$("#" + game_id).attr('src', value);
+				}
+			}
+
+			function getAvatars(){
+				var avatars = $('.account-avatar');
+				var account_id = "";
+				var value = "";
+				for (var i = 0; i < avatars.length; i++){
+					account_id = avatars[i].name;
+					value = "/get_account_avatar/" + account_id;
+					avatars[i].src = value;
+					//$("#" + account_id).attr('src', value);
+				}
+			}
+
+			function getFriendRequests() {
+				$.getJSON("/get_friend_requests", {
+				}, function(data) {
+					var requests = data.result;
+					var span = $('#span-friend-requests');
+					var ul = $('#ul-friend-requests');
+					span.empty();
+					ul.empty();
+					
+					if (requests.length > 0){
+						var spanContent = "<span class='badge'>" + requests.length.toString() + "</span>";
+						span.append(spanContent);
+						renderFriendRequests(requests);
+					} else {
+						ul.append("<label style='margin: 10px'>No friend requests.</label>")
+					}
+					getAvatars()
+				});
+			}
+
+			function renderFriendRequests(requests) {
+				var ul = $('#ul-friend-requests');
+				var content = "";
+				
+				for (var i = 0; i < requests.length; i++){
+					content = "<li><table class='table-friend-requests'><tr><td>";
+					content += "<img name='" + requests[i][0] + "' "; 
+					content += "src='{{ url_for('static', filename = 'images/default_avatar.jpg') }}' ";
+					content += "class='account-avatar' width='40px' height='40px' />";
+					content += "</td><td class='td-friend-requests-userid'><b><label>" + requests[i][0];
+					content += "</label></b></td><td>";
+					content += "<button value='" + requests[i][0] + "' "; 
+					content += "name='btn-friend-requests-accept' class='btn btn-success'>Accept</button>";
+					content += "</td><td><button value='" + requests[i][0] + "' name='btn-friend-requests-reject'";
+					content += "class='btn btn-danger'>Reject</button>"
+					content += "</td></tr></table></li>";
+					
+					ul.append(content);
+				}
+
+				$('button[name=btn-friend-requests-accept').click(function() {
+					$.getJSON('/update_friend_request', {
+						id: this.value,
+						status: 1
+					}, function(data) {
+						//alert(data.result);
+					});
+					getFriendRequests(); // Refresh
+				});
+				$('button[name=btn-friend-requests-reject').click(function() {
+					$.getJSON('/update_friend_request', {
+						id: this.value,
+						status: 0
+					}, function(data) {
+						//alert(data.result);
+					});
+					getFriendRequests(); // Refresh
+				});
+			}
+
+			function sendFriendRequest(to) {
+				$.getJSON('/send_friend_request', {
+        			id: to
+      			}, function(data) {
+        			alert(data.result);
+      			});
+			}
+
+			function getUnreadMessagesCount() {
+				$.getJSON('/get_unread_messages_count', {
+				}, function(data){
+					var span = $('#span-messages');
+					span.empty();
+					if (data.result > 0){
+						span.append("<span class='badge'>" + data.result + "</span> Messages");
+					} else {
+						span.append(" Messages");
+					}
+				});
+			}
+
+			$(document).ready(function() {
+				// Create account
+				$('#btn-create-account').click(function(){
+					var inputs = $('.input-create-account');
+					var errors = '';
+
+					for (var i = 0; i < inputs.length-2; i++){ // -2 excluding the radiobuttons.
+						if (inputs[i].value.length == 0){
+							errors += "\n- You did not filled all the fields."
+							break;
+						}
+					}
+
+					if (inputs[4].value != inputs[5].value){ // Confirm password missmatch.
+						errors += "\n- Re-enter password field doesn't match."
+					}
+
+					if (errors.length == 0){
+						$.getJSON('/check_email_and_username', {
+							email: inputs[2].value,
+							username: inputs[3].value
+						}, function(data){
+							if (data.result != null){
+								if (data.result[0][0] == '1')
+									errors += "\n- The email you entered is already in use.";
+								if (data.result[0][1] == '1')
+									errors += "\n- The username you choosed is already taken.";
+							}
+							if (errors.length == 0) // OK to create account.
+								document.formcreateaccount.submit();
+							else
+								alert(errors);
+						});
+					}
+					else
+						alert(errors);
+				});
+
+				// Image upload
+				$('#file-img-upload').change(function(){
+					imagePreview(this);
+				});
+
+				// Dialog
+				$('.btn-dialog').click(function(){
+					$('.overlay').toggle();
+					$('#dialog').dialog({
+						height: 360,
+						width: 540,
+						closeOnEscape: true, 
+   						close: function(){
+   							$('.overlay').toggle();
+   						}
+   					});
+				});
+
+				$('#btn-cancel').click(function(){
+					$('#dialog').dialog('close');
+				});
+
+				// Send friend request.
+				$('#btn-add-friend').click(function(){
+					//$('b').text('Sending request...')
+					$(this).attr('disabled', 'true');
+					var user_id = $('#message-to').attr('name');
+					sendFriendRequest(user_id);
+				});
+
+				getFriendRequests();
+				getGameCovers();
+
+				// Messaging
+				$('#btn-message-send').click(function(){
+					var subject = $('#tbx-message-subject');
+					var body = $('#txarea-message-body');
+					
+					$.getJSON('/send_message', {
+						to: $('#message-to').attr('name'),
+						subject: subject.val(),
+						body: body.val()
+					}, function(data) {
+						alert(data.result);
+						subject.val('');
+						body.val('');
+						$('#btn-message-send').attr('disabled', 'true');
+						$('#dialog').dialog('close');
+					});
+				});
+
+				$('#txarea-message-body').keyup(function() {
+					var text = $(this).val();
+					var btn = $('#btn-message-send');
+
+					if (text.length > 0){
+						btn.removeAttr('disabled');
+					} else {
+						btn.attr('disabled', 'true');
+					}
+				});
+
+				getUnreadMessagesCount();
+
+				$('.a-message-from').click(function(){
+					var message = $(this);
+					$('.tr-messages[name=' + message.attr('name') + "]").attr('bgcolor', '#FFFFFF');
+
+					$.getJSON('/get_message_by_id',{
+						id: message.attr('name')
+					}, function(data){
+						var from = data.result[0];
+						var subject = data.result[1];
+						var datetime = data.result[2];
+						var body = data.result[3];
+						$('#tbx-view-from').val(from);
+						$('#tbx-view-subject').val(subject);
+						$('#td-view-datetime').html(datetime);
+						$('#txarea-view-body').val(body);
+						$('#btn-message-reply').removeAttr('disabled');
+						getUnreadMessagesCount()
+					});
+				});
+
+				$('#btn-message-reply').click(function(){
+					$('#tbx-message-subject').val("Re: " + $('#tbx-view-subject').val());
+					var to = $('#tbx-view-from').val();
+					$('#message-to').val(to);
+					$('#message-to').attr('name', to);
+					$('#img-message-reply').attr('name', to);
+					getAvatars();
+				});
+
+				$('#btn-messages-delete').click(function(){
+					var cbxs = $('.cbx-tr');
+					var deleted = false;
+
+					for (var i = 0; i < cbxs.length; i++){
+						if (cbxs[i].checked){
+							$.getJSON('/delete_message', {
+								id: cbxs[i].name
+							}, function(data){
+								if (data.result != null){ // Error ocurred.
+									alert(data.result);
+								} else {
+									window.location = "/messages";
+								}
+							});
+						}
+					}
+				});
+
+				$('#cbx-th').click(function(){
+					if ($(this).is(':checked')){
+						$('.cbx-tr').attr('checked', 'true');
+					} else {
+						$('.cbx-tr').removeAttr('checked');
+					}
+				});
+
+				// Purchasing
+				$('#btn-confirm-purchase').click(function(){
+					$.getJSON('/purchase_game', {
+						gameId: $('.game-cover')[0].name
+					}, function(data){
+						var message = data.result;
+						if (data.result == '0'){
+							message = "You don't have enough funds to purchase this game.\nYou can add funds in Profile settings.";
+						} else if (data.result == '1'){
+							$('#btn-buy-now').attr('disabled', 'true');
+							message = "You have successfully purchased the game.";
+						} else if (data.result == '2'){
+							message = "You already purchased this game.";
+						}
+						alert(message);
+					});
+					$('#dialog').dialog('close');
+				});
+
+				$('#btn-confirm-addfunds').click(function(){
+					$.getJSON('/add_funds', {
+						amount: $('#select-addfunds option:selected').attr('value')
+					}, function(data){
+						alert(data.result);
+						$('#dialog').dialog('close');
+						window.location = "/profile";
+					});
+				});
+
+			});
+		</script>
+	</head>
+	<body>
+		<div class="navbar-inverse" style="position: fixed; width: 100%; z-index: 2">
+			{% if session.logged_in %}
+				{% include 'navbar.html' %}
+			{% else %}
+				<a href="/">
+					<h1><span class="label label-success">JOCAROS</span></h1>
+				</a>
+			{% endif %}
+		</div>
+		<div class="container">
+			<div style="margin: 10% 0 0 0">
+				<br/>
+				{% if feedback %}
+					{% if feedback[0] == 0 %}
+						<div class="alert alert-success"><span class="glyphicon glyphicon-ok-circle"></span> {{ feedback[1] }}</div>
+					{% else %}
+						<div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> {{ feedback[1] }}</div>
+					{% endif %}
+				{% else %}
+					{% block content %}
+					{% endblock %}
+				{% endif %}
+			</div>
+		</div>
+	</body>
+</html>

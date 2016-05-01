@@ -1,0 +1,45 @@
+{% extends "template.html" %}
+{% block content %}
+	<h2><b>Create new account</b></h2>
+	<br/>
+	<h3>Please fill the required fields</h3>	
+	<form name="formcreateaccount" action='/create_account' method="post">
+		<table class="table-shared">
+			<tr>
+				<td style="padding: 0 10px" align="right"><label>Name: </label></td>
+				<td><input type="text" id="tbx-create-account-name" class="input-create-account form-control" name="tbx-name" maxlength="30" /></td>
+			</tr>
+			<tr>
+				<td style="padding: 0 10px" align="right"><label>Lastname: </label></td>
+				<td><input type="text" id="tbx-create-account-lastname" class="input-create-account form-control" name="tbx-lastname" maxlength="30" /></td>
+			</tr>
+			<tr>
+				<td style="padding: 0 10px" align="right"><label>E-mail: </label></td>
+				<td><input type="text" id="btn-create-account-email" class="input-create-account form-control" name="tbx-email" maxlength="50" /></td>
+			</tr>
+			<tr>
+				<td style="padding: 0 10px" align="right"><label>Username: </label></td>
+				<td><input type="text" id="tbx-create-account-username" class="input-create-account form-control" name="tbx-username" maxlength="20" /></td>
+			</tr>
+			<tr>
+				<td style="padding: 0 10px" align="right"><label>Password: </label></td>
+				<td><input type="password" id="tbx-create-account-password" class="input-create-account form-control" name="tbx-password" maxlength="30" /></td>
+			</tr>
+			<tr>
+				<td style="padding: 0 10px" align="right"><label>Re-enter password: </label></td>
+				<td><input type="password" id="tbx-create-account-passwordc" class="input-create-account form-control" name="tbx-re-passwords" maxlength="30" /></td>
+			</tr>
+			<tr>
+				<td style="padding: 0 10px" align="right"><label>Developer: </label></td>
+				<td>
+					<input id="rbtn_no" type="radio" class="input-create-account" name="developer" value="0" checked="true" />
+					<label for="rbtn_no">No  </label>
+					<input id="rbtn_yes" type="radio" class="input-create-account" name="developer" value="1" />
+					<label for="rbtn_yes">Yes</label>
+				</td>
+			</tr>
+		</table>
+	</form>
+	<br/>
+	<p style="margin-left: 15%"><button id="btn-create-account" class="btn btn-info btn-lg">Create account</button></p>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "template.html" %}
+{% block content %}
+	<h2><b>Welcome</b></h2>
+	<br/>
+	<h3>Log in</h3>
+	{% if error %}
+		<p class="error"><strong>Error: </strong> {{ error }} </p>
+	{% endif %}
+	<form action='/login' method="post">
+		<input type="text" name="email" placeholder="E-mail" value="{{ request.form.email }}" class="form-control" />
+		<input type="password" name="password" placeholder="Password" class="form-control" /></dd>
+		<br/>
+		<p><input type="submit" value="Log in" class="btn btn-info btn-lg" /></p>
+	</form>
+	<a href="/create_account">Create a new account</a>
+{% endblock %}

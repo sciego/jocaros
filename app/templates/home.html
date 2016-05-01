@@ -1,0 +1,41 @@
+{% extends 'template.html' %}
+{% block content %}
+	<h2>Hi, {{ session.logged_in[1] }}</h2><br/>
+	
+	<table style="width: 100%">
+		<th><h3>New Games</h3></th>
+		<th><h3>You may like to meet</h3></th>
+		<tr>
+			<td width="60%">
+				<div id="comslider_in_point_255077" style="position: relative; z-index: 1">
+				</div>
+			</td>
+			<td width="40%">
+				{% include 'users_list.html' %}
+			</td>
+		<tr>
+			<td>
+				<br/>
+				<h3>Top Games</h3>
+				{% if games %}
+					<ul class="media-list">
+  						{% for game in games %}
+  							<li class="media">
+    							<a class="pull-left" href="/game_overview/{{ game[0] }},0">
+      								<img src="{{ url_for('static', filename = 'images/no_cover.jpg') }}" class="game-cover" name={{ game[0] }} width="50" height="50" />
+    							</a>
+    							<div class="media-body">
+      								<a href="/game_overview/{{ game[0] }},0"><h4 class="media-heading">{{ game[2] }}</h4></a>
+      								by <a href="/search_games_by_developer/{{ game[1] }}">{{ game[1] }}</a>
+    							</div>
+  							</li>
+  						{% endfor %}
+					</ul>
+				{% endif %}
+			</td>
+		</tr>
+	</table>
+
+	<script type="text/javascript">var oCOMScript255077=document.createElement('script');oCOMScript255077.src="http://commondatastorage.googleapis.com/comslider/target/users/1401707384x77af341cab26a06882b85d04bce3d68c/comslider.js?timestamp=1401757733";oCOMScript255077.type='text/javascript';document.getElementsByTagName("head").item(0).appendChild(oCOMScript255077);
+	</script>
+{% endblock %}

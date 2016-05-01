@@ -1,0 +1,52 @@
+{% extends 'template.html' %}
+{% block content %}
+  <h1>Game Upload</h1><br/>
+  <div class="jumbotron">
+    <label>Enter the following info to upload a new game.</label><br/>
+    <form action="/upload_game" method="post" enctype='multipart/form-data'>
+        <table>
+          <tr>
+            <td>
+              <img id="img-upload" src="{{ url_for('static', filename = 'images/no_cover.jpg') }}" width="200" height="200" />
+              <input type="file" id="file-img-upload" name="file" />
+            </td>
+            <td>
+              <table class="table-shared">
+                <tr>
+                  <td><label>Name: </label></td>
+                  <td><input type="text" name="tbx-name" class="form-control" /></td>
+                </tr>
+                <tr>
+                  <td><label>Category: </label></td>
+                  <td>
+                    <select name="select-category">
+                      {% if categories %}
+                        {% for c in categories %}
+                          <option value="{{ c[0] }}">{{ c[1] }}</option>
+                        {% endfor %}
+                      {% endif %}
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label>Price: $</label></td>
+                  <td>
+                      <select name="select-price">
+                        <option value="4.99">4.99</option>
+                        <option value="9.99">9.99</option>
+                        <option value="14.99">14.99</option>
+                        <option value="19.99">19.99</option>
+                        <option value="24.99">24.99</option>
+                        <option value="29.99">29.99</option>
+                        <option value="39.99">39.99</option>
+                      </select> USD
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table><br/>
+        <input type="submit" value="Upload Game" class="btn btn-info btn-lg" style="margin-left: 370px" />
+    </form>
+  </div>
+{% endblock %}

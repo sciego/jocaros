@@ -1,0 +1,21 @@
+{% extends 'template.html' %}
+{% block content %}
+	<h2>Purchases</h2><br/>
+	{% if purchases %}
+		<ul class="media-list">
+  			{% for purchase in purchases %}
+  				<li class="media">
+    				<a class="pull-left" href="/game_overview/{{ purchase[0] }},1">
+      					<img src="{{ url_for('static', filename = 'images/no_cover.jpg') }}" class="game-cover" name={{ purchase[0] }} width="50" height="50" />
+    				</a>
+    				<div class="media-body">
+      					<a href="/game_overview/{{ purchase[0] }},1"><h4 class="media-heading">{{ purchase[2] }}</h4></a>
+      					by <a href="/search_games_by_developer/{{ purchase[1] }}">{{ purchase[1] }}</a>
+                 | Purchased on {{ purchase[4] }}
+    				</div>
+  				</li>
+  			{% endfor %}
+		</ul>
+		
+	{% endif %}
+{% endblock %}

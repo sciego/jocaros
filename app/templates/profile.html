@@ -1,0 +1,118 @@
+{% extends 'template.html' %}
+{% block content %}
+	<h1>Profile</h1>
+	<div class="jumbotron">
+		<form action="/profile" method="post" enctype='multipart/form-data'>
+  			<table>
+  				<tr>
+  					<td>
+  						<img id="img-upload" src="{{ url_for('static', filename = 'images/default_avatar.jpg') }}" class="account-avatar" name={{ session.logged_in[0] }} width="200" height="200" />
+  						<input type="file" id="file-img-upload" name="file"  />
+            </td>
+  					<td>
+  						<label>Wallet:</label>  ${{ session.logged_in[3] }} <a class="btn-dialog" style="cursor: pointer">add funds</a><br/>
+  						<label>Reward points =</label> {{ session.logged_in[6] }} <a href="/reward_points">cash now</a>
+              <br/><br/>
+              <table>
+  							<tr>
+  								<td><label>ID: </label></td>
+  								<td><label>{{ session.logged_in[0] }}</label></td>
+  							</tr>
+  							<tr>
+  								<td><label>Name: </label></td>
+  								<td><input type="text" name="tbx-name" value={{ session.logged_in[1] }} class="form-control" /></td>
+  							</tr>
+  							<tr>
+  								<td><label>Lastname: </label></td>
+  								<td><input type="text" name="tbx-lastname" value={{ session.logged_in[2] }} class="form-control" /></td>
+  							</tr>
+  							<tr>
+  								<td><label>E-mail: </label></td>
+  								<td><input type="text" name="tbx-email" value={{ session.logged_in[5] }} class="form-control" /></td>
+  							</tr>
+  						</table>
+            </td>
+  				</tr>
+  			</table><br/>
+  			<input type="submit" value="Apply changes" class="btn btn-info btn-lg" style="margin-left: 370px" />
+		</form>
+	</div>
+
+	<div class="overlay">
+		<div id="dialog">
+			<div>
+				<h3><label class="glyphicon glyphicon-usd"></label>
+        <label>Add funds to Wallet</label></h3>
+				<p>Select paying method and the amount of money you'll like to add to you Wallet.</p>
+				<p>
+          <label>Amount:  </label>
+          $
+            <select id="select-addfunds">
+              <option value="10">10.00</option>
+              <option value="15">15.00</option>
+              <option value="20">20.00</option>
+              <option value="30">30.00</option>
+              <option value="50">50.00</option>
+              <option value="100">100.00</option>
+            </select>
+          USD
+        </p><br/>
+        <p><img src="{{ url_for('static', filename = 'images/credit_cards_logos.png') }}" width="200" height="30" /></p>
+        <br/>
+        <p>
+					<a id="btn-confirm-addfunds" class="btn btn-warning btn-lg btn-confirm" role="button">Confirm</a>
+					<a id="btn-cancel" class="btn btn-default btn-lg" role="button">Cancel</a>
+				</p>
+			</div>
+		</div>
+	</div>
+
+  <div class="jumbotron">
+    <h2>Change password</h2><br/>
+    <table class="table-shared">
+      <tr>
+        <td><label>Current password:</label></td>
+        <td><input type="password" id="tbx-cpd-current" class="form-control" />
+      </tr>
+      <tr>
+        <td><label>New password:</label></td>
+        <td><input type="password" id="tbx-cpd-new" class="form-control" /></td>
+      </tr>
+      <tr>
+        <td><label>Confirm password:</label></td>
+        <td><input type="password" id="tbx-cpd-confirm" class="form-control" /></td>
+      </tr><br/>
+      <tr>
+        <td></td>
+        <td>
+          <button id="btn-change-password" class="btn btn-info">Change Password</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $('#btn-change-password').click(function(){
+        var currentpd = $('#tbx-cpd-current').attr('value');
+        var newpd = $('#tbx-cpd-new').attr('value');
+        var confirmpd = $('#tbx-cpd-confirm').attr('value');
+        
+        if (newpd.length < 4){
+          alert("New password require at least 4 characters.");
+        } else if (newpd != confirmpd){
+          alert("Confirm password missmatched.");
+        } else {
+          $.getJSON('/change_password', {
+            current: currentpd,
+            newpwd: newpd
+          }, function(data){
+            alert(data.result);
+            window.location = "/profile";
+          });
+        }
+      });
+
+    });
+  </script>
+{% endblock %}

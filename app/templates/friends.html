@@ -1,0 +1,25 @@
+{% extends 'template.html' %}
+{% block content %}
+	<h1>Friends</h1>
+  	<br/>
+  	<div>
+  		<div class="jumbotron">
+  			<h3>Search for friends</h3>
+  			<form action="/friends" method="post">
+  				<table>
+  					<tr>
+  						<td>
+  							<input type="text" name="tbx-username" class="form-control" placeholder="Enter a username" />
+  						</td>
+  						<td>
+  							<input type="submit" class="btn bnt-info" value="Search" />
+  						</td>
+  						<td style="padding-left: 10px"><label>Having a user in your friend list will allow you to exchange message, play online games games and more!</label></td>
+  					</tr>
+  				</table>
+  			</form>
+  		</div>
+
+    	{% include 'users_list.html' %}
+  	</div>
+{% endblock %}
